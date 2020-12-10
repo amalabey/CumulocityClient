@@ -82,9 +82,13 @@ bool CumulocityClient::connectClient() {
         }
     );
 
-    String user = _credentials.tenant;
-    user += "/";
-    user += _credentials.username;
+    String user = _credentials.username;
+    if(user.indexOf("/") <= 0)
+    {
+        user = _credentials.tenant;
+        user += "/";
+        user += _credentials.username;
+    }
 
     bool success = 
         _client.connect(_clientId, user.c_str(), _credentials.password, "s/us", 0, 
