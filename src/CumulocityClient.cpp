@@ -252,9 +252,10 @@ void CumulocityClient::handleOperation(char* payload) {
     char* templateCode = elements[0];
     char* clientId = elements[1];
     char* content = elements[2];
-
+    
     free(elements);
 
+    Serial.printf("templatecode: %s, clientId: %s, content: %s \n", templateCode, clientId, content);
     if(strcmp(_clientId, clientId)) {
         String fragment;
         String message;
@@ -278,7 +279,8 @@ void CumulocityClient::handleOperation(char* payload) {
         message = "501," + fragment;
         _client.publish("s/us", message.c_str());
 
-        int status = callback(templateCode, content);
+        char* fullContentPayload = strstr(payload, content);
+        int status = callback(templateCode, fullContentPayload);
 
         if (status == 0) {
             message = "503," + fragment;
